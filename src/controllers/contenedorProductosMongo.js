@@ -23,7 +23,7 @@ class ContenedorProductosMongo {
     // Insertar un Producto en la Tabla productos
     async insertarProductos(obj) {
       try {        
-        const resultnvoProducto = await this._table.insertOne(obj);               
+        const resultnvoProducto = await this._table.create(obj);               
         return resultnvoProducto;
       } catch (error) {
         console.log(error.message);
@@ -31,12 +31,18 @@ class ContenedorProductosMongo {
     }
     
     // Actualizar los datos de un producto de un Id especifico
-    async actualizarProductoId(id, params) {
-      try {
-        return this._table.findByIdAndUpdate(id, { params });
-      } catch (error) {
-        console.log(error.message);
-      }
+    actualizarProductoId(id, params) {      
+      let {codigo, descripcion, precio,stock,foto} = params;
+
+      const resultado = this._table.updateOne({ _id: id }, 
+        {$set: { codigo, descripcion, precio,stock,foto}},
+        function(error, info) {
+          if (error) {
+            return true
+          } else {
+            return false
+          }
+        })        
     }
     
     // Borrar un producto de la tabla productos enviando su Id

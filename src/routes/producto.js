@@ -75,11 +75,11 @@ productosRouter.put("/:id", async (req, res, next) => {
         if(!codigo||!descripcion||!foto||!precio||!stock){            
             res.status(400).json("Faltan datos");
         } else {
-            let id = parseInt(req.params.id);            
+            let id = req.params.id;
             let nuevosDatos = req.body;
             const productoAcualizado = await productoDao.actualizarProductoId(id, nuevosDatos);
-            if(productoAcualizado.length > 0){
-                res.status(200).json(productoAcualizado);
+            if(!productoAcualizado){
+                res.status(200).send("Producto actualizado");
             } else {
                 res.status(400).json({ error: `Producto No Encontrado con ID: ${id}` });
             }

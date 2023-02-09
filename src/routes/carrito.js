@@ -52,7 +52,7 @@ carritosRouter.get ("/:id", async (req, res, next) =>{
 // Traer los productos de un Carrito de un ID
 carritosRouter.get ("/productos/:id", async (req, res, next) =>{    
     try {
-        let id = parseInt(req.params.id);          
+        let id = req.params.id;
         let accion = 'detalleCarrito';              
         const mensaje = "";
         const carrito = await carritoDao.listarProductosDelCarrito(id);
@@ -68,8 +68,7 @@ carritosRouter.get ("/productos/:id", async (req, res, next) =>{
 carritosRouter.post ("/", async (req, res, next) =>{
     try {                                       
         let obj = req.body;
-        const IdCarrito = await carritoDao.crearCarrito(obj);
-        const carrito = await carritoDao.listarCarritoId(IdCarrito);
+        const carrito = await carritoDao.crearCarrito(obj);        
         carrito
             ? res.status(200).json(carrito)
             : res.status(404).json({ message: "No se puede crear el Carrito " + id});
@@ -78,17 +77,51 @@ carritosRouter.post ("/", async (req, res, next) =>{
     }
 });
 
-// Borrar los datos de un carrito por su ID
+// Agregar productos al Carrito
+carritosRouter.put ("/:id", async (req, res, next) =>{
+    try {
+        
+        let id = req.params.id;                           
+        let obj = req.body;
+        
+        const carrito = await carritoDao.agregarProductos(id, obj);
+        console.log(carrito);
+
+        carrito
+            ? res.status(200).json(carrito)
+            : res.status(404).json({ message: "No se puede crear el Carrito " + id});
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Borrar un carrito por su ID
 carritosRouter.delete ("/:id", async (req, res, next) =>{
     try{
-        let id = parseInt(req.params.id);
+        let id = req.params.id;
         const fueBorrado = await carritoDao.borrarCarritoPorId(id);
         fueBorrado
         ? res.status(200).json({ message: "Carrito borrado con éxito", id: req.params.id })
         : res.status(404).json({ message: "Carrito no encontrado: id "  + req.params.id });                  
         let accion = 'borrarCarritoId';  
         //res.render('index.ejs', {productos, accion})
-    } catch{
+    } catch (error){
+        console.log(error);
+    }
+});
+
+// Borrar un carrito por su ID
+carritosRouter.put ("/producto/:id", async (req, res, next) =>{
+    try{
+        let idCarrito = req.params.id;
+        let idProducto = req.body;
+        const fueBorrado = await carritoDao.deleteProducto(idCarrito, idProducto);
+        fueBorrado
+        ? res.status(200).json({ message: "Producto borrado con éxito", id: idProducto })
+        : res.status(404).json({ message: "Producto no encontrado: id "  + idProducto });                  
+        let accion = 'borrarCarritoId';  
+        //res.render('index.ejs', {productos, accion})
+    } catch (error){
         console.log(error);
     }
 });
