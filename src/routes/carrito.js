@@ -110,7 +110,7 @@ carritosRouter.delete ("/:id", async (req, res, next) =>{
     }
 });
 
-// Borrar un carrito por su ID
+// Borrar un Producto de un ID carrito
 carritosRouter.put ("/producto/:id", async (req, res, next) =>{
     try{
         let idCarrito = req.params.id;
