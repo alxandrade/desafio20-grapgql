@@ -33,8 +33,8 @@ app.use(session({
     store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/ecommerce"}),
     key: "user_sid",
     secret: 'C0ntr4s3n4',
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     cookie:{
         maxAge:600000, //10 min
     },

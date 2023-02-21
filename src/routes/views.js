@@ -1,14 +1,12 @@
 import { Router } from "express";
-import { msgFlash } from "../middleware/middlewares.js";
+import { auth } from "../middleware/middlewares.js";
 
 const viewsRouter = Router();
 
-viewsRouter.get('/register',msgFlash,(req,res)=>{
-    res.render('pages/register');
-})
+viewsRouter.get("/", auth, async (req, res) => {
+    res.render("pages/home", { userLogin: req.user.username });
+});
 
-viewsRouter.get('/login', msgFlash,(req,res)=>{
-    res.render('pages/login');
-})
+
 
 export default viewsRouter;
