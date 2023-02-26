@@ -5,8 +5,6 @@ const viewsRouter = Router();
 
 viewsRouter.get("/", auth, async (req, res) => {
     res.render("pages/home", { userLogin: req.user.username });
-});
-
-
+})
 
 export default viewsRouter;

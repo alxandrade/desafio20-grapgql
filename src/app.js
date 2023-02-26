@@ -12,6 +12,7 @@ import userRouter from './routes/auth/sessions.js';
 import { initializePassport } from "./strategies/passport.strategy.js";
 import passport from "passport";
 import indexRouter from "./routes/index.routes.js";
+import randomsRouter from "./routes/yargs/randoms.routes.js";
 //import Socket from "./utils/sockets/index.js";
 
 const app = express();
@@ -51,14 +52,19 @@ app.set('view engine','hbs');
 app.use(express.static(`${__dirname}/public`));
 
 // Routes
+app.use("/", indexRouter);
 // Metodo GET para Loggeo
 app.use('/api/auth',viewsRouter);
-// Metodo POST para Loggeo
 app.use('/api/auth',userRouter);
-app.use("/", indexRouter);
 
 // Para Productos y Carritos
 app.use("/api",serverRoutes);
+
+// Para numeros Randoms
+app.use("/api/randoms", randomsRouter);
+
+
+
 
 app.use(cors());
 
