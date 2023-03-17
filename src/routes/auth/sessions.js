@@ -3,18 +3,19 @@ import passport from "passport";
 import {userSchema} from "../../models/modeloUser.js";
 import { createHash, isValid } from "../../utils/bcrypt.js";
 import { msgFlash } from "../../middleware/middlewares.js";
+import { addLogger } from "../../middleware/logger.js";
 const userRouter = Router();
 
 
-userRouter.get('/login', msgFlash,(req,res)=>{
+userRouter.get('/login', addLogger, msgFlash,(req,res)=>{
     res.render('pages/login');
 })
 
-userRouter.get('/register',msgFlash,(req,res)=>{
+userRouter.get('/register', addLogger, msgFlash,(req,res)=>{
     res.render('pages/register');
 })
 
-userRouter.post('/register',async (req,res)=>{
+userRouter.post('/register',addLogger, async (req,res)=>{
     const {first_name,last_name,email,password} = req.body;
     if(!first_name||!email||!password) return res.status(400).send({status:"error",error:"Valores incompletos"});
     const exists  = await userSchema.findOne({email});
@@ -35,7 +36,7 @@ userRouter.post('/login',
     passport.authenticate('login', {
         failureRedirect:'/api/auth/loginFail',
         failureMessage:true
-    }),
+    }), addLogger, 
     
     async (req,res)=>{
         const user = req.user; 
@@ -48,18 +49,18 @@ userRouter.post('/login',
     res.render("pages/home", { userLogin: req.session.user.email });
 })
 
-userRouter.get('/loginFail',(req,res)=>{
+userRouter.get('/loginFail',addLogger,(req,res)=>{
     console.log(req.session.messages);
     //if(req.session.messages.length>4) return res.status(400).send({message:"Bloquear Usuario"})
     res.status(400).send({status:"error",error:"Error de autenticación"})
 })
 
-userRouter.get("/logout", (req, res) => {    
+userRouter.get("/logout", addLogger, (req, res) => {    
     res.render("pages/home", { userLogout: req.session.user.email });
     req.session.destroy();
 });
 
-userRouter.get('/current',(req,res)=>{
+userRouter.get('/current', addLogger, (req,res)=>{
     console.log(req.session);
     res.send(req.session.user);
 })

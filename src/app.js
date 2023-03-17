@@ -1,4 +1,6 @@
 import express from "express";
+import cluster from "cluster";
+import os from 'os';
 import cors from "cors";
 import msgFlash from "connect-flash";
 import http from "http";
@@ -14,9 +16,13 @@ import passport from "passport";
 import indexRouter from "./routes/index.routes.js";
 import randomsRouter from "./routes/yargs/randoms.routes.js";
 //import Socket from "./utils/sockets/index.js";
+import compression from 'express-compression';
+import { addLogger } from "./middleware/logger.js";
 
 const app = express();
+const CPUs = os.cpus().length;
 const PORT = process.env.PORT || 8080;
+
 // Servidores
 /* 1. HTTP SERVER */
 const httpServer = http.createServer(app);
@@ -29,6 +35,10 @@ const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(msgFlash());
+app.use(compression({
+    brotli:{enable:true, zlip:{}}
+}));
+
 
 app.use(session({
     store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/ecommerce"}),
@@ -63,11 +73,20 @@ app.use("/api",serverRoutes);
 // Para numeros Randoms
 app.use("/api/randoms", randomsRouter);
 
-
-
-
 app.use(cors());
 
-httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));
+if(cluster.isPrimary){
+    console.log(`Proceso primario (o padre) en PID: ${process.pid}. Generando procesos Hijos`)
+    for(let i = 0; i < CPUs; i++) {
+        cluster.fork()
+    }
+    cluster.on('exit',(worker)=>{
+        console.log(`Proceso hijo con pid ${worker.process.pid} Murió :(, creando reemplazo`)
+        cluster.fork();
+    })
+}else{
+    console.log(`Proceso worker (o hijo) en PID: ${process.pid}`)
+    httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));
+}
 
 
