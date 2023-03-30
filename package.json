@@ -1,7 +1,7 @@
 {
-  "name": "segunda-entrega",
+  "name": "tercera-entrega",
   "version": "1.0.0",
-  "description": "Segunda Entrega Proyecto BackEnd",
+  "description": "Tercera Entrega Proyecto BackEnd",
   "type": "module",
   "main": "./src/app.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "node ./src/app.js",
     "dev": "nodemon ./src/app.js"
   },
-  "author": "",
+  "author": "Alejandro Andrade",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -25,7 +25,9 @@
     "knex": "^2.4.2",
     "minimist": "^1.2.8",
     "mongoose": "^6.9.0",
+    "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
+    "nodemailer": "^6.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "session-file-store": "^1.5.0",

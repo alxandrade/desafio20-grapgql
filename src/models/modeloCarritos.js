@@ -2,7 +2,8 @@ import { Schema, model, mongoose } from "mongoose";
 
 const schema = new Schema(
   {
-    productos: [],
+    email: { type: String, require: true },
+    products: { type: Array, require: false },
   },
   {
     timestamps: true,

@@ -23,9 +23,9 @@ class ContenedorCarritoMongo {
     }
 
     // Listar un carrito de un ID en especifico
-    async listarCarritoId(id) {
+    async listarCarritoId(idCarrito) {
       try {
-        return await this._table.findById({ _id: id });
+        return await this._table.findById({ _id: idCarrito });
       } catch (error) {
         return {
           status: "error",
@@ -37,7 +37,9 @@ class ContenedorCarritoMongo {
     // Listar los Productos de un ID carrito en especifico
     async listarProductosDelCarrito(id) {
       try {
-        return await this._table.findById({ _id: id });
+        const data = await this._table.findById({ _id: id });        
+        const result = data.products;        
+        return result;
       } catch (error) {
         return {
           status: "error",
@@ -58,23 +60,22 @@ class ContenedorCarritoMongo {
     }
 
 
+    // Borra Un Producto de Un Carrito
     async deleteProducto(idCarrito, idProd) {
       try {
         let list = [];
         let newList = [];
-        let {_id}  = idProd;
         
-        const dataObj = await this.listarCarritoId(idCarrito);
-        list.push(...dataObj.productos);
-        
-
+        const dataObj = await this.listarCarritoId(idCarrito);        
+        list.push(...dataObj.products);
+                
         for (let i = 0; i <= list.length - 1; i++) {          
-          if (list[i]._id !== _id) {          
+          if (list[i]._id.toString() !== idProd) {          
             newList.push(list[i]);
           }
         }
         
-        return this._table.findByIdAndUpdate(idCarrito, { productos: newList });
+        return this._table.findByIdAndUpdate(idCarrito, { products: newList });
       } catch (error) {
         console.log(error.message);
       }

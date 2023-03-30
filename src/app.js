@@ -18,6 +18,8 @@ import randomsRouter from "./routes/yargs/randoms.routes.js";
 //import Socket from "./utils/sockets/index.js";
 import compression from 'express-compression';
 import { addLogger } from "./middleware/logger.js";
+import profileRouter from "./routes/profile.routes.js";
+import orderRouter from "./routes/order.js";
 
 const app = express();
 const CPUs = os.cpus().length;
@@ -39,13 +41,15 @@ app.use(compression({
     brotli:{enable:true, zlip:{}}
 }));
 
+// Logger
+app.use(addLogger);
 
 app.use(session({
     store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/ecommerce"}),
     key: "user_sid",
     secret: 'C0ntr4s3n4',
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie:{
         maxAge:600000, //10 min
     },
@@ -73,6 +77,13 @@ app.use("/api",serverRoutes);
 // Para numeros Randoms
 app.use("/api/randoms", randomsRouter);
 
+// Para ver el Profile de quien esta conectado 
+app.use("/api/profile", profileRouter);
+
+// Para las Ordenes de Compra
+app.use("/api/order", orderRouter);
+
+
 app.use(cors());
 
 if(cluster.isPrimary){
@@ -89,4 +100,4 @@ if(cluster.isPrimary){
     httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));
 }
 
-
+//httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));

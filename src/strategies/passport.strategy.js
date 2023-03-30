@@ -9,12 +9,8 @@ export const initializePassport = () => {
   passport.use(
     "login",
     new LocalStrategy({usernameField:'email'}, async (email, password, done) => {
-      
-      console.log(email)
-      console.log(password)
       if(!email||!password) return done(null,false,{message:"Valores incompletos"});
       let user = await userSchema.findOne({ email });
-      console.log(user)
       if (!user) return done(null, false, { message: "No existe usuario regitrado con ese Email" });
       const isValidPassword = await isValid(user.password,password);
       if (!isValidPassword) return done(null, false, { message: "Contraseña incorrecta" });

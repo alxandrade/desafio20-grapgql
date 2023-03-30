@@ -15,6 +15,7 @@ productosRouter.get("/", async (req, res, next) => {
     //.render("index.ejs", { productos, accion })
     productos
       ? res.status(200).send(productos)
+      //? res.render("pages/products")
       : res.status(404).json({ message: "No hay productos disponibles" });
   } catch (error) {
     console.log(error);

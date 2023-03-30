@@ -22,7 +22,7 @@ carritosRouter.get("/", async (req, res) => {
     let accion = "TodosLosCarritos";
     
     carritos
-      ? res.status(200).json(carritos)
+      ? res.status(200).json(carritos) 
       : res.status(404).json({ message: "No hay productos disponibles" });
     //res.render("carrito.ejs", { carrito, accion, mensaje });
     res.status()
@@ -52,13 +52,14 @@ carritosRouter.get ("/:id", async (req, res, next) =>{
 // Traer los productos de un Carrito de un ID
 carritosRouter.get ("/productos/:id", async (req, res, next) =>{    
     try {
-        let id = req.params.id;
+        let idCart = req.params.id;
         let accion = 'detalleCarrito';              
         const mensaje = "";
-        const carrito = await carritoDao.listarProductosDelCarrito(id);
-        carrito
-            ? res.status(200).json(carrito)
-            : res.status(404).json({ message: "No existe el Carrito con el Id " + id});              
+        const products = await carritoDao.listarProductosDelCarrito(idCart);
+        products
+            //? res.status(200).json(carrito)
+            ? res.render('pages/cart', { products, idCart })
+            : res.status(404).json({ message: "No existe el Carrito con el Id " + idCart});              
     } catch (error) {
         console.log(error);
     }
@@ -110,17 +111,17 @@ carritosRouter.delete ("/:id", async (req, res, next) =>{
     }
 });
 
-// Borrar un Producto de un ID carrito
-carritosRouter.put ("/producto/:id", async (req, res, next) =>{
+// Borrar un Producto de un ID carrito, antes era un PUT, ahora será un POST
+carritosRouter.post ("/:id_cart/producto/:id_prod/delete", async (req, res, next) =>{
     try{
-        let idCarrito = req.params.id;
-        let idProducto = req.body;
+        let idCarrito = req.params.id_cart;
+        let idProducto = req.params.id_prod
+ 
         const fueBorrado = await carritoDao.deleteProducto(idCarrito, idProducto);
         fueBorrado
-        ? res.status(200).json({ message: "Producto borrado con éxito", id: idProducto })
+        ? res.status(200).json({ message: "Producto borrado con éxito", id: idProducto })        
         : res.status(404).json({ message: "Producto no encontrado: id "  + idProducto });                  
-        let accion = 'borrarCarritoId';  
-        //res.render('index.ejs', {productos, accion})
+        let accion = 'borrarCarritoId';        
     } catch (error){
         console.log(error);
     }

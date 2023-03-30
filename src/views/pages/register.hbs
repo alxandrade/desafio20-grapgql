@@ -7,7 +7,7 @@
     <h3 class="mb-3 text-white text-center font-monospace">Registrate</h3>
     <div class="d-flex flex-column align-items-center">
         <div>
-            <form action="/api/auth/register" method="POST" >
+            <form action="/api/auth/register" enctype="multipart/form-data" method="POST" >
                 <div class="form-floating mb-3">
                     <input type="name" name="first_name" class="form-control" id="floatingName" placeholder="Ingresa tu Nombre" required> 
                     <label for="floatingName">Ingresa tu Nombre</label>
@@ -23,6 +23,10 @@
                 <div class="form-floating">
                     <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Ingresa una Contraseña" required>
                     <label for="floatingPassword">Ingresa una contraseña</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="file" name="file" class="form-control" id="floatingInput" placeholder="Elegi tu foto" required> 
+                    <label for="floatingInput">Elegi tu foto</label>
                 </div>
                 <button type="submit" class="btn btn-warning mt-3 container">Registrarme</button>
             </form>
