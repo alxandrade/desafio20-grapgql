@@ -37,15 +37,13 @@ const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(msgFlash());
-app.use(compression({
-    brotli:{enable:true, zlip:{}}
-}));
+app.use(compression());
 
 // Logger
 app.use(addLogger);
 
 app.use(session({
-    store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/ecommerce"}),
+    store: MongoStore.create({mongoUrl: process.env.MONGO_URL}),
     key: "user_sid",
     secret: 'C0ntr4s3n4',
     resave: true,
@@ -67,6 +65,7 @@ app.use(express.static(`${__dirname}/public`));
 
 // Routes
 app.use("/", indexRouter);
+
 // Metodo GET para Loggeo
 app.use('/api/auth',viewsRouter);
 app.use('/api/auth',userRouter);
@@ -86,7 +85,7 @@ app.use("/api/order", orderRouter);
 
 app.use(cors());
 
-if(cluster.isPrimary){
+/*if(cluster.isPrimary){
     console.log(`Proceso primario (o padre) en PID: ${process.pid}. Generando procesos Hijos`)
     for(let i = 0; i < CPUs; i++) {
         cluster.fork()
@@ -98,6 +97,6 @@ if(cluster.isPrimary){
 }else{
     console.log(`Proceso worker (o hijo) en PID: ${process.pid}`)
     httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));
-}
+}*/
 
-//httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));
+httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));

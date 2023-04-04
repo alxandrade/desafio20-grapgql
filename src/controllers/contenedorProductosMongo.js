@@ -1,59 +1,61 @@
+import ProductoService from "../services/productoServices.js";
+import CarritoService from "../services/carritoServices.js";
+
 class ContenedorProductosMongo {
-    constructor(table) {
-      this._table = table;
-    }
-    
-    // Listar TODOS los productos
-    async listarProductos() {
-      return await this._table.find();
-    }
+  constructor() {}
 
-    // Listar un producto enviando su Id
-    async listarProductoPorId(id) {
-      try {
-        return await this._table.find({ _id: id });
-      } catch (error) {
-        return {
-          status: "error",
-          mensaje: "No existe producto con ese ID o es un formato invalido",
-        };
-      }
-    }
-    
-    // Insertar un Producto en la Tabla productos
-    async insertarProductos(obj) {
-      try {        
-        const resultnvoProducto = await this._table.create(obj);               
-        return resultnvoProducto;
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-    
-    // Actualizar los datos de un producto de un Id especifico
-    actualizarProductoId(id, params) {      
-      let {codigo, descripcion, precio,stock,foto} = params;
+  async listarProductos(req, res) {
+    let products = await ProductoService.listarProductos();
+    res.render("pages/products", { products });
+  }
 
-      const resultado = this._table.updateOne({ _id: id }, 
-        {$set: { codigo, descripcion, precio,stock,foto}},
-        function(error, info) {
-          if (error) {
-            return true
-          } else {
-            return false
-          }
-        })        
-    }
-    
-    // Borrar un producto de la tabla productos enviando su Id
-    async borrarProductoPorId(id) {
-      try {
-        return this._table.findByIdAndDelete({ _id: id });
-      } catch (error) {
-        console.log(error);
-      }
+  async insertarProductos(req, res) {
+    try {
+      const {
+        params: { id_cart, id_prod },
+      } = req;
+      const product = await ProductoService.listarProductoPorId(id_prod);
+      const cart = await CarritoService.listarCarritoId(id_cart);
+    } catch (error) {
+      console.log(error.message);
     }
   }
+
+  async borrarProductoPorId(id, idProd) {
+    try {
+      let list = [];
+      let newList = [];
+
+      const result = await ProductoService.borrarProductoPorId(id, idProd)
+      const dataObj = await this.getById(id);
+      list.push(...dataObj.productos);
+      for (let i = 0; i <= list.length - 1; i++) {
+        if (list[i]._id.toString() != idProd) {
+          newList.push(list[i]);
+        }
+      }
+      return this._table.findByIdAndUpdate(id, { productos: newList });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async actualizarProductoId(id, params) {
+    try {
+      return this._table.findByIdAndUpdate(id, { params });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async borrarProductoPorId(id) {
+    try {
+      return this._table.findByIdAndDelete({ _id: id });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+}
   
-  export default ContenedorProductosMongo;
+export default new ContenedorProductosMongo();
   
