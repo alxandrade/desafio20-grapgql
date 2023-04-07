@@ -1,32 +1,37 @@
+import OrdenService from "../services/ordenServices.js";
+import { orderEmail } from "../utils/nodemailer.js";
+
 class ContenedorOrden {
-  constructor(table) {
-    this._table = table;
-  }
+  constructor() {}
 
   // Generar una Orden de Compra
-  async generarOrdenCompra(user, products) {
-    try {      
-      const total = products.reduce((item, _item) => {
-        return item + _item.precio;
-      }, 0);
+  async generarOrdenCompra(req, res) {
+    try {
+
+      const {
+        params: { idCart },
+      } = req;
+
+      const orden = await OrdenService.generarOrdenCompra(req, idCart);
+            
+      if (orden) {
+        orderEmail(req.user, orden);        
+      }
       
-      const order = await this._table.create({
-        first_name: user.user.first_name,
-        email: user.user.email,
-        products: products,
-        total: total,
-      });
-      return order;
+      res.redirect(`/api/order/${orden._id}`);
     } catch (error) {
       console.log(error);
     }
   }
 
   // Traer una Orden de Compra por su Id
-  async traerOrdenbyId(idOrder) {
+  async traerOrdenbyId(req, res) {
     try {
-      const order = await this._table.findById({ _id: idOrder }).lean();
-      return order
+      const {
+        params: { id },
+      } = req;
+      const order = await OrdenService.traerOrdenbyId(id)
+      res.render("pages/checkout", { order });
     } catch (error) {
       console.log(error);
     }

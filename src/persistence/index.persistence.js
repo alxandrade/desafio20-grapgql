@@ -4,8 +4,8 @@ import { productosSchema } from "../models/modeloProductos.js";
 import CarritoPersistence from "./carrito.persistence.js";
 import { carritosSchema } from "../models/modeloCarritos.js";
 
-/*import OrdenPersistence from "./orden.persistence.js";
-import { orderSchema } from "../models/modeloOrden.js";*/
+import OrdenPersistence from "./orden.persistence.js";
+import { orderSchema } from "../models/modeloOrden.js";
 
 export class ProductPersist extends ProductoPersistence {
   constructor() {
@@ -19,8 +19,8 @@ export class CartPersist extends CarritoPersistence {
   }
 }
 
-/*export class OrderPersist extends OrdenPersistence {
+export class OrderPersist extends OrdenPersistence {
   constructor() {
     super(orderSchema);
   }
-}*/
+}

@@ -1,15 +1,18 @@
 import { Router } from "express";
 import { ordenesDao } from "../daos/index.js";
 import { auth } from "../middleware/middlewares.js";
-import { orderEmail } from "../utils/nodemailer.js";
-import carritoServices from "../services/carritoServices.js";
+import ContenedorOrden from "../controllers/contenedorOrden.js";
 
 const orderDao = new ordenesDao();
 const orderRouter = Router();
+const controllerOrden = new ContenedorOrden();
+
+orderRouter 
+  .get('/:id', auth, controllerOrden.traerOrdenbyId)
+  .post('/:idCart', auth, controllerOrden.generarOrdenCompra)
 
 
-// Traer Orden por Id
-orderRouter.get('/:id', auth, async (req,res)=>{
+/*orderRouter.get('/:id', auth, async (req,res)=>{
   try {
     const order = await orderDao.traerOrdenbyId(req.params.id);        
     res.render("pages/checkout", { order });
@@ -30,6 +33,6 @@ orderRouter.post('/:idCart', auth, async (req,res)=>{
   } catch (error) {
     console.log(error);
   }
-})
+})*/
 
 export default orderRouter;
