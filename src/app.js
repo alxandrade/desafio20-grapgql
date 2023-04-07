@@ -20,6 +20,10 @@ import compression from 'express-compression';
 import { addLogger } from "./middleware/logger.js";
 import profileRouter from "./routes/profile.routes.js";
 import orderRouter from "./routes/order.js";
+import dotenv from 'dotenv'
+
+dotenv.config();
+
 
 const app = express();
 const CPUs = os.cpus().length;
@@ -67,6 +71,7 @@ app.use(express.static(`${__dirname}/public`));
 
 // Routes
 app.use("/", indexRouter);
+
 // Metodo GET para Loggeo
 app.use('/api/auth',viewsRouter);
 app.use('/api/auth',userRouter);
@@ -86,7 +91,7 @@ app.use("/api/order", orderRouter);
 
 app.use(cors());
 
-if(cluster.isPrimary){
+/*if(cluster.isPrimary){
     console.log(`Proceso primario (o padre) en PID: ${process.pid}. Generando procesos Hijos`)
     for(let i = 0; i < CPUs; i++) {
         cluster.fork()
@@ -98,6 +103,6 @@ if(cluster.isPrimary){
 }else{
     console.log(`Proceso worker (o hijo) en PID: ${process.pid}`)
     httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));
-}
+}*/
 
-//httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));
+httpServer.listen(PORT, ()=> console.log(`http://localhost:${PORT}`));

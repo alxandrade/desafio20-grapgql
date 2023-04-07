@@ -1,7 +1,7 @@
 {
-  "name": "tercera-entrega",
+  "name": "proyecto-por-capas",
   "version": "1.0.0",
-  "description": "Tercera Entrega Proyecto BackEnd",
+  "description": "Proyecto por Capas",
   "type": "module",
   "main": "./src/app.js",
   "scripts": {

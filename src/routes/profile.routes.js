@@ -4,8 +4,7 @@ import { addLogger } from "../middleware/logger.js";
 
 const profileRouter = Router();
 
-profileRouter.get("/", addLogger, auth, (req, res) => {   
-    console.log(req.user);
+profileRouter.get("/", addLogger, auth, (req, res) => {       
     const { first_name, last_name, email, avatar } = req.user;
     const user = {
         first_name: first_name,
