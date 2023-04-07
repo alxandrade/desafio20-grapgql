@@ -2,13 +2,14 @@ import ProductoService from "../services/productoServices.js";
 import CarritoService from "../services/carritoServices.js";
 
 class ContenedorProductosMongo {
-  constructor() {}
-
-  async listarProductos(req, res) {
-    let products = await ProductoService.listarProductos();    
-    //res.render("pages/products", { products });
-    res.send(products);
-  }
+    constructor(table) {
+      this._table = table;
+    }
+    
+    // Listar TODOS los productos
+    async listarProductos() {
+      return await this._table.find();
+    }
 
   async insertarProductos(req, res) {
     try {
@@ -58,4 +59,5 @@ class ContenedorProductosMongo {
   }
 }
   
-export default ContenedorProductosMongo;
+  export default ContenedorProductosMongo;
+  

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import {userSchema} from "../../models/modeloUser.js";
-import { createHash, isValid } from "../../utils/bcrypt.js";
+import { createHash } from "../../utils/bcrypt.js";
 import { msgFlash } from "../../middleware/middlewares.js";
 import { addLogger } from "../../middleware/logger.js";
 import uploader from "../../middleware/multer.middleware.js"

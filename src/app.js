@@ -41,15 +41,13 @@ const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(msgFlash());
-app.use(compression({
-    brotli:{enable:true, zlip:{}}
-}));
+app.use(compression());
 
 // Logger
 app.use(addLogger);
 
 app.use(session({
-    store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/ecommerce"}),
+    store: MongoStore.create({mongoUrl: process.env.MONGO_URL}),
     key: "user_sid",
     secret: 'C0ntr4s3n4',
     resave: true,

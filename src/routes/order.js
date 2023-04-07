@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { ordenesDao } from "../daos/index.js";
+import { carritosDao, ordenesDao } from "../daos/index.js";
 import { auth } from "../middleware/middlewares.js";
 import { orderEmail } from "../utils/nodemailer.js";
-import CarritoService from '../services/carritoServices.js'
 
 const orderDao = new ordenesDao();
+const carritoDao = new carritosDao();
 const orderRouter = Router();
 
 
@@ -20,7 +20,7 @@ orderRouter.get('/:id', auth, async (req,res)=>{
 
 orderRouter.post('/:idCart', auth, async (req,res)=>{
   try {    
-    const products = await CarritoService.listarProductosDelCarrito(req.params.idCart);    
+    const products = await carritoDao.listarProductosDelCarrito(req.params.idCart);    
     const order = await orderDao.generarOrdenCompra(req, products);    
     //await carritoDao.borrarCarritoPorId(req.params.idCart);
     if (order) {
