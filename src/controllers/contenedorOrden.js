@@ -1,33 +1,36 @@
-import OrdenService from "../services/ordenServices.js";
-import CarritoService from "../services/carritoServices.js";
-import { orderEmail } from "../utils/nodemailer.js";
-
-
 class ContenedorOrden {
-  constructor() {}
+  constructor(table) {
+    this._table = table;
+  }
 
-  async generarOrdenCompra(req, res) {
-    try {
-      const order = await OrdenService.generarOrdenCompra(req);
-      await CarritoService.borrarCarritoPorId(req.user.cart_id);
-      if (order) {
-        orderEmail(req.user, order);        
-      }
-      res.redirect(`/api/order/${order._id}`);
+  // Generar una Orden de Compra
+  async generarOrdenCompra(user, products) {
+    try {      
+      const total = products.reduce((item, _item) => {
+        return item + _item.precio;
+      }, 0);
+      
+      const order = await this._table.create({
+        first_name: user.user.first_name,
+        email: user.user.email,
+        products: products,
+        total: total,
+      });
+      return order;
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   }
 
-  async traerOrdenbyId(req, res) {
+  // Traer una Orden de Compra por su Id
+  async traerOrdenbyId(idOrder) {
     try {
-      const order = await OrdenService.traerOrdenbyId(req.params.id);
-      res.render("pages/checkout", { order });
+      const order = await this._table.findById({ _id: idOrder }).lean();
+      return order
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
-  }
+  }  
 }
 
-
-export default new ContenedorOrden();
+export default ContenedorOrden;
