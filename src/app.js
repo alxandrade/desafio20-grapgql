@@ -9,17 +9,16 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
-import viewsRouter from './routes/views.js';
-import userRouter from './routes/auth/sessions.js';
+import viewsRouter from './routes/views.routes.js';
+import userRouter from './routes/auth/sessions.routes.js';
 import { initializePassport } from "./strategies/passport.strategy.js";
 import passport from "passport";
 import indexRouter from "./routes/index.routes.js";
 import randomsRouter from "./routes/yargs/randoms.routes.js";
-//import Socket from "./utils/sockets/index.js";
 import compression from 'express-compression';
 import { addLogger } from "./middleware/logger.js";
 import profileRouter from "./routes/profile.routes.js";
-import orderRouter from "./routes/order.js";
+import orderRouter from "./routes/order.routes.js";
 import dotenv from 'dotenv'
 
 dotenv.config();
@@ -30,26 +29,22 @@ const CPUs = os.cpus().length;
 const PORT = process.env.PORT || 8080;
 
 // Servidores
-/* 1. HTTP SERVER */
 const httpServer = http.createServer(app);
 
-/* 2. Servidor WebSocket */
-//const socket = new Socket(httpServer);
-//socket.init();
-
 // Middlewares
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(msgFlash());
 app.use(compression());
+app.use(express.static(`${__dirname}/public`));
+app.use(express.json());
+app.use(msgFlash());
+app.use(express.urlencoded({extended:true}));
 
 // Logger
 app.use(addLogger);
 
 app.use(session({
     store: MongoStore.create({mongoUrl: process.env.MONGO_URL}),
-    key: "user_sid",
-    secret: 'C0ntr4s3n4',
+    key: process.env.MONGO_STORE_KEY,
+    secret: process.env.MONGO_STORE_SECRET,
     resave: true,
     saveUninitialized: true,
     cookie:{
@@ -65,7 +60,7 @@ app.use(passport.session());
 app.engine('hbs',handlebars.engine({extname:".hbs"}));
 app.set('views', `${__dirname}/views`);
 app.set('view engine','hbs');
-app.use(express.static(`${__dirname}/public`));
+
 
 // Routes
 app.use("/", indexRouter);
@@ -85,9 +80,6 @@ app.use("/api/profile", profileRouter);
 
 // Para las Ordenes de Compra
 app.use("/api/order", orderRouter);
-
-
-app.use(cors());
 
 /*if(cluster.isPrimary){
     console.log(`Proceso primario (o padre) en PID: ${process.pid}. Generando procesos Hijos`)

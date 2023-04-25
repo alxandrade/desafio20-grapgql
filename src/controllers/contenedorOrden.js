@@ -1,41 +1,34 @@
-import OrdenService from "../services/ordenServices.js";
 import { orderEmail } from "../utils/nodemailer.js";
+import { orderService } from "../services/index.service.js";
+import { cartService } from "../services/index.service.js";
 
-class ContenedorOrden {
-  constructor() {}
+const getAll = (req, res) => {};
 
-  // Generar una Orden de Compra
-  async generarOrdenCompra(req, res) {
-    try {
-
-      const {
-        params: { idCart },
-      } = req;
-
-      const orden = await OrdenService.generarOrdenCompra(req, idCart);
-            
-      if (orden) {
-        orderEmail(req.user, orden);        
-      }
-      
-      res.redirect(`/api/order/${orden._id}`);
-    } catch (error) {
-      console.log(error);
-    }
+const getById = async (req, res) => {
+  try {    
+    const order = await orderService.getById(req.params.id)
+    res.render("pages/checkout", { order });
+  } catch (error) {
+    loggerApp.error(error);
   }
+};
 
-  // Traer una Orden de Compra por su Id
-  async traerOrdenbyId(req, res) {
-    try {
-      const {
-        params: { id },
-      } = req;
-      const order = await OrdenService.traerOrdenbyId(id)
-      res.render("pages/checkout", { order });
-    } catch (error) {
-      console.log(error);
-    }
-  }  
-}
+const create = async (req, res) => {
+  let products = await cartService.getById(req.user.cart_id);
+  const total = products.products.reduce((item, _item) => {
+    return item + _item.price;
+  }, 0);
+  const order = await orderService.createOrder(req, products, total);
+  if (order) {
+    orderEmail(req.user, order);    
+  }
+  res.redirect(`/api/order/${order._id}`);
+};
 
-export default ContenedorOrden;
+const deleteById = (req, res) => {};
+
+const deleteAll = (req, res) => {};
+
+const updateById = (req, res) => {};
+
+export default { getAll, getById, create, deleteById, deleteAll, updateById };

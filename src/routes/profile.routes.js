@@ -1,18 +1,10 @@
 import { Router } from "express";
 import { auth } from "../middleware/middlewares.js";
 import { addLogger } from "../middleware/logger.js";
+import contenedorUser from "../controllers/contenedorUser.js";
 
 const profileRouter = Router();
 
-profileRouter.get("/", addLogger, auth, (req, res) => {       
-    const { first_name, last_name, email, avatar } = req.user;
-    const user = {
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        avatar: avatar,    
-    };
-    res.render("pages/profile", { profile: user });
-});
+profileRouter.get("/", addLogger, auth, contenedorUser.getUser);
 
 export default profileRouter;

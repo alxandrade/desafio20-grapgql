@@ -1,17 +1,19 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
-const schema = new Schema(
-  {
-    first_name: { type: String, require: true },
-    email: { type: String, require: true },
-    products: [],
-    total: { type: Number, require: true },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
+let schema = mongoose.Schema;
+
+export default class Order {
+  static get model() {
+    return "orders";
   }
-);
 
-export const orderSchema = model("pedidos", schema);
+  static get schema() {
+    return {
+      first_name: { type: String, require: true },
+      email: { type: String, require: true },
+      products: [],
+      total: { type: Number, require: true },
+    }
+  }
+}
 

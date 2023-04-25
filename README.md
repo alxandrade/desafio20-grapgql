@@ -1,9 +1,3 @@
-# Proyecto por Capas
+# Mejora Arquitectura de API
 
-Se dividio el proyecto en las siguientes capas
-
-## Controllers
-
-## Persistence
-
-## Services
+Reconfiguraciones en rutas, modelos, controladores y daos

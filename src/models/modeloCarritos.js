@@ -1,14 +1,17 @@
-import { Schema, model, mongoose } from "mongoose";
+import mongoose from "mongoose";
 
-const schema = new Schema(
-  {
-    email: { type: String, require: true },
-    products: { type: Array, require: false },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
+let Schema = mongoose.Schema;
+
+export default class Cart {
+  static get model() {
+    return "carritos";
   }
-);
 
-export const carritosSchema = model("carritos", schema);
+  static get schema() {
+    return{
+      email: { type: String, require: true },
+      firts_name: String,
+      products: { type: Array, require: false },
+    };
+  }
+}
