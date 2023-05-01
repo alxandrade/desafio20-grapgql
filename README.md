@@ -1,3 +1,3 @@
-# Mejora Arquitectura de API
+# Utilizando GraphQL
 
-Reconfiguraciones en rutas, modelos, controladores y daos
+Usando servidor Apollo para realizar Querys y Mutations en GraphQL

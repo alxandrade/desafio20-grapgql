@@ -1,7 +1,7 @@
 {
-  "name": "arquitectura",
+  "name": "grapgql",
   "version": "1.0.0",
-  "description": "Mejorando la Arquitectura",
+  "description": "Usando GrapgQL y Apollos",
   "type": "module",
   "main": "./src/app.js",
   "scripts": {
