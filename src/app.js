@@ -21,6 +21,11 @@ import profileRouter from "./routes/profile.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import dotenv from 'dotenv'
 
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from '@apollo/server/express4';
+import typeDefs from './graphql/typeDefs.js'
+import resolvers from "./graphql/resolvers.js";
+
 dotenv.config();
 
 
@@ -55,6 +60,15 @@ app.use(session({
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+const apollo = new ApolloServer({
+    typeDefs,
+    resolvers
+});
+await apollo.start();
+app.use(expressMiddleware(apollo));
+
 
 
 app.engine('hbs',handlebars.engine({extname:".hbs"}));
